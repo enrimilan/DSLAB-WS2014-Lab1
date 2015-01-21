@@ -1,0 +1,53 @@
+*	CloudController	controller
+*	Client			client1
+*	Client 			client2
+
+client1:		!login alice 12345
+>			verify("success")
+
+client2:		!login bill 23456
+>			verify("success")
+
+client2: 		!buy 200
+>			verify("700")
+
+client1: 		!buy 300
+>			verify("800")
+
+controller:	!users
+>			verify(".*alice.*online.*800.*bill.*online.*700.*", T(test.util.Flag).REGEX)
+
+client1: 		!logout
+>			verify("success")
+
+client2: 		!logout
+>			verify("success")
+
+client1: 		!login bill 23456
+>			verify("success")
+
+client2: 		!login alice 123456
+>			verify("Wrong")
+
+client2: 		!login alice 12345
+>			verify("success")
+
+client2: 		!buy 200
+>			verify("1000")
+
+client1: 		!buy 300
+>			verify("1000")
+
+client1: 		!list
+>			verify("No operations")
+
+client2: 		!exit
+client1:		!exit
+
+controller:	!users
+>			verify(".*alice.*offline.*1000.*bill.*offline.*1000.*", T(test.util.Flag).REGEX)
+
+controller:	!nodes
+>			verify("No nodes")
+
+controller:	!exit

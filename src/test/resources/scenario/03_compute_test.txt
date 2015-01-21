@@ -1,0 +1,28 @@
+*	CloudController	controller
+*	Client			alice
+*	Client			bill
+*	Node			node2
+
+alice:		!login alice 12345
+>			verify("success")
+
+bill:		!login bill 23456
+>			verify("success")
+
+alice:		!compute 2 / 2
+>			verify("1")
+
+node2:		!exit
+
+bill: 		!compute 2 / 2
+>			verify("No nodes available")
+
+controller:	!users
+>			verify(".*alice.*online.*450.*bill.*online.*500.*", T(test.util.Flag).REGEX)
+
+controller: !nodes
+>			verify(".*11983.*Usage: 50.*", T(test.util.Flag).REGEX)
+
+bill:		!exit
+controller: !exit
+alice:		!exit

@@ -1,0 +1,44 @@
+*	CloudController	controller
+*	Client			client1
+*	Client 			client2
+
+client1:		!login alice 12345
+>			verify("success")
+
+client2:		!login alice 12345
+>			verify("already logged in")
+
+controller:	!users
+>			verify(".*alice.*online.*bill.*offline.*", T(test.util.Flag).REGEX)
+
+client2:		!login bill 23456
+>			verify("success")
+
+controller:	!users
+>			verify(".*alice.*online.*bill.*online.*", T(test.util.Flag).REGEX)
+
+client2:		!login alice 12345
+>			verify("already logged in")
+
+client2: 		!buy 300
+>			verify("800")
+
+controller:	!users
+>			verify(".*alice.*online.*bill.*online.*800.*", T(test.util.Flag).REGEX)
+
+client1: 		!buy 20
+>			verify("520")
+
+controller:	!users
+>			verify(".*alice.*online.*520.*bill.*online.*800.*", T(test.util.Flag).REGEX)
+
+client1:		!exit
+
+controller:	!users
+>			verify(".*alice.*offline.*520.*bill.*online.*800.*", T(test.util.Flag).REGEX)
+
+controller: 	!exit
+client2:		!credits
+>			verify("cloud controller suddenly went offline")
+
+* Client client1

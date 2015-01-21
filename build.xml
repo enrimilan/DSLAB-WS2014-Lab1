@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="dslab14" default="compile" basedir=".">
+
+	<property name="src.dir" value="src/main/java" />
+	<property name="src.resources.dir" value="src/main/resources" />
+	<property name="test.src.dir" value="src/test/java" />
+	<property name="test.resources.dir" value="src/test/resources" />
+	<property name="build.dir" value="build" />
+	<property name="reports.dir" value="reports" />
+
+	<path id="project.classpath">
+		<pathelement location="${build.dir}" />
+		<pathelement location="lib/bcprov-jdk16-140.jar" />
+		<pathelement location="lib/commons-logging-1.1.3.jar" />
+		<pathelement location="lib/hamcrest-core-1.3.jar" />
+		<pathelement location="lib/junit-4.11.jar" />
+		<pathelement location="lib/spring-core-4.1.0.RELEASE.jar" />
+		<pathelement location="lib/spring-expression-4.1.0.RELEASE.jar" />
+	</path>
+
+	<target name="compile" description="Compile project.">
+		<mkdir dir="${build.dir}" />
+		<javac srcdir="${src.dir};${test.src.dir}" destdir="${build.dir}" classpathref="project.classpath" debug="true" deprecation="true" includeantruntime="false" />
+		<copy todir="${build.dir}">
+			<fileset dir="${src.resources.dir}">
+				<include name="*.properties" />
+			</fileset>
+			<fileset dir="${test.resources.dir}">
+				<include name="*.txt" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="test" description="Test the solution" depends="compile">
+		<mkdir dir="${reports.dir}" />
+		<junit includeantruntime="true" logfailedtests="true" showoutput="true" printsummary="true">
+			<classpath refid="project.classpath" />
+			<formatter type="plain" />
+			<batchtest fork="false" todir="${reports.dir}">
+				<fileset dir="${test.src.dir}">
+					<include name="**/*Test.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<target name="run-controller" depends="compile" description="Run Cloud-Controller.">
+		<java classname="controller.CloudController" fork="true" classpathref="project.classpath">
+			<arg value="controller" />
+		</java>
+	</target>
+
+	<target name="run-node1" depends="compile" description="Run 1st Node.">
+		<java classname="node.Node" fork="true" classpathref="project.classpath">
+			<arg value="node1" />
+		</java>
+	</target>
+
+	<target name="run-node2" depends="compile" description="Run 2nd Node.">
+		<java classname="node.Node" fork="true" classpathref="project.classpath">
+			<arg value="node2" />
+		</java>
+	</target>
+
+	<target name="run-node3" depends="compile" description="Run 3rd Node.">
+		<java classname="node.Node" fork="true" classpathref="project.classpath">
+			<arg value="node3" />
+		</java>
+	</target>
+
+	<target name="run-node4" depends="compile" description="Run 4th Node.">
+		<java classname="node.Node" fork="true" classpathref="project.classpath">
+			<arg value="node4" />
+		</java>
+	</target>
+
+	<target name="run-client" depends="compile" description="Run Client.">
+		<java classname="client.Client" fork="true" classpathref="project.classpath">
+			<arg value="client" />
+		</java>
+	</target>
+
+	<target name="clean" description="Clean build products.">
+		<delete dir="${build.dir}" />
+		<delete dir="${reports.dir}" />
+	</target>
+
+	<target name="rebuild" depends="clean, compile" description="Clean and build products." />
+</project>

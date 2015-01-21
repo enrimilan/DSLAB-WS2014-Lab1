@@ -1,0 +1,58 @@
+*	CloudController	controller
+*	Client			alice
+*	Client			bill
+*	Node			node1
+*	Node			node2
+*	Node			node3
+*	Node			node4
+
+alice:			!credits
+>			verify("not logged in!")
+alice: 			!list
+>			verify("not logged in!")
+alice:			!compute 5 + 5 
+>			verify("not logged in!")
+alice:			!buy 20
+>			verify("not logged in!")
+alice:			!logout 
+>			verify("not logged in!")
+alice:			!login alice 1234
+>			verify("Wrong username or password")
+alice:			!login alice 12345
+>			verify("success")
+alice:			!list
+alice:			!buy 20
+>			verify(520)
+alice:			!compute 5000 + 432834 - 384378 + 8383 / 3434 + 1 * 44
+
+node1: 		!exit
+node2:		!exit
+bill:			!credits
+>			verify("not logged in!")
+bill: 			!list
+>			verify("not logged in!")
+bill:			!compute 5 + 5 
+>			verify("not logged in!")
+bill:			!buy 20
+>			verify("not logged in!")
+bill:			!logout 
+>			verify("not logged in!")
+bill:			!login bill 1234
+>			verify("Wrong username or password")
+bill:			!login bill 23456
+>			verify("success")
+bill:			!compute 5000 + 432834 - 384378 + 8383 / 3434 + 1 * 44
+controller: 	!nodes
+controller: 	!exit
+node3: 			!exit
+bill: 			!buy 20
+node4: 			!exit
+
+*	Node			node1
+*	Node			node2
+*	Node			node3
+*	Node			node4
+* 	CloudController	controller
+
+controller:		!users
+controller:		!nodes
